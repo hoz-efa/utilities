@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Utilities</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    html, body {
+      height: 100%;
+      width: 100%;
+      background: #000;
+      color: #fff;
+      font-family: sans-serif;
+      overflow: hidden;
+    }
+    .container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      text-align: center;
+      padding: 2vh 2vw;
+    }
+    h1 {
+      font-size: clamp(2.5rem, 5vw, 4rem);
+      font-weight: 700;
+      margin-bottom: 4vh;
+      color: #fff;
+    }
+    nav {
+      display: flex;
+      flex-direction: column;
+      gap: 2vh;
+    }
+    a {
+      text-decoration: none;
+      color: #fff;
+      font-size: clamp(1.1rem, 2.5vw, 1.6rem);
+      transition: color 0.3s ease;
+    }
+    a:hover {
+      color: #888;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Utilities</h1>
+    <nav>
+      <a href="date-calendar.html">Date & Calendar</a>
+      <a href="date.html">Date</a>
+      <a href="clock-12hr-seconds.html">12hr Clock with Seconds</a>
+      <a href="clock-12hr.html">12hr Clock</a>
+      <a href="clock-24hr-seconds.html">24hr Clock with Seconds</a>
+      <a href="clock-24hr.html">24hr Clock</a>
+      <a href="clock-analog-seconds.svg">Analog Clock with Seconds</a>
+      <a href="clock-analog.svg">Analog Clock</a>
+    </nav>
+  </div>
+</body>
+</html>

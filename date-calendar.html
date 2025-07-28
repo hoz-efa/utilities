@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html style="height:100%; margin:0; padding:0;">
+<head>
+  <meta charset="UTF-8" />
+  <title>Calendar with Date</title>
+  <style>
+    html, body {
+      background: #000;
+      color: #fff;
+      font-family: sans-serif;
+      font-weight: bold;
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      width: 100%;
+      overflow: hidden;
+    }
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 4vw;
+      padding: 2vw;
+      box-sizing: border-box;
+    }
+    .date-text-container {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: flex-start;
+      width: 40vw;
+    }
+    .date-line {
+      white-space: nowrap;
+      font-kerning: none;
+    }
+    .calendar-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      width: 50vw;
+    }
+    .calendar-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 0.3vw;
+      font-size: 2vw;
+      width: 100%;
+    }
+    .calendar-grid div {
+      aspect-ratio: 1 / 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .day-header {
+      color: #fff;
+    }
+    .day-cell {
+      border-radius: 50%;
+    }
+    .current-date {
+      background-color: #fff;
+      color: #000;
+      width: 2.8vw;
+      height: 2.8vw;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+    }
+    @media (max-width: 768px) {
+      body {
+        flex-direction: column;
+        gap: 5vw;
+      }
+      .date-text-container,
+      .calendar-container {
+        width: 90vw;
+        align-items: center;
+      }
+      .calendar-grid {
+        font-size: 5vw;
+        gap: 1vw;
+      }
+      .current-date {
+        width: 8vw;
+        height: 8vw;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="date-text-container">
+    <div id="dayName" class="date-line" style="font-size:20pt;"></div>
+    <div id="fullDate" class="date-line" style="font-size:20pt;"></div>
+  </div>
+  <div class="calendar-container">
+    <div class="calendar-grid" id="calendarGrid"></div>
+  </div>
+  <script>
+    const dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+    const dayShort = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+    const monthNames = ["January", "February", "March", "April", "May", "June",
+                        "July", "August", "September", "October", "November", "December"];
+    const today = new Date();
+    const currentYear = today.getFullYear();
+    const currentMonth = today.getMonth();
+    const currentDate = today.getDate();
+    document.getElementById("dayName").textContent = dayNames[today.getDay()];
+    document.getElementById("fullDate").textContent = `${monthNames[currentMonth]} ${currentDate}, ${currentYear}`;
+    const calendarGrid = document.getElementById("calendarGrid");
+    for (let i = 0; i < 7; i++) {
+      const cell = document.createElement("div");
+      cell.textContent = dayShort[i];
+      cell.className = "day-header";
+      calendarGrid.appendChild(cell);
+    }
+    const firstDay = new Date(currentYear, currentMonth, 1).getDay();
+    for (let i = 0; i < firstDay; i++) {
+      const empty = document.createElement("div");
+      calendarGrid.appendChild(empty);
+    }
+    const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+    for (let day = 1; day <= daysInMonth; day++) {
+      const cell = document.createElement("div");
+      if (day === currentDate) {
+        const highlight = document.createElement("div");
+        highlight.className = "current-date";
+        highlight.textContent = day;
+        cell.appendChild(highlight);
+      } else {
+        cell.textContent = day;
+        cell.className = "day-cell";
+      }
+      calendarGrid.appendChild(cell);
+    }
+  </script>
+</body>
+</html>
