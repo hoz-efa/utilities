@@ -2,40 +2,52 @@
 <html style="height:100%; margin:0; padding:0">
   <head>
     <meta charset="UTF-8"/>
-    <title>Date</title>
-    <style>
-      html, body {
-        background: #000;
+    <title>Calendar</title>
+    <style type="text/css">
+      html {
+        background: #000000;
         font-family: sans-serif;
         font-weight: bold;
-        color: #fff;
-        margin: 0;
-        padding: 0;
-        height: 100%;
-        width: 100%;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        overflow: hidden;
-      }
-      #datetext {
-        font-size: 3vw;
-        white-space: nowrap;
+        color: #FFFFFF;
       }
     </style>
   </head>
-  <body>
-    <span id="datetext"></span>
+
+  <body style="display:flex; height:100%; margin:0; padding:0; justify-content:center; align-items:center">
+    <span id="datetext" style="font-kerning:none"></span>
+
     <script>
+      "use strict";
+
       const textElem = document.getElementById("datetext");
-      const dayNames = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
-      const monthNames = ["January","February","March","April","May","June",
-                          "July","August","September","October","November","December"];
+      const targetWidth = 0.9;
+      let curFontSize = 20;
+
+      const dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+      const monthNames = ["January", "February", "March", "April", "May", "June",
+                          "July", "August", "September", "October", "November", "December"];
+
       function updateDate() {
         const d = new Date();
-        textElem.textContent = `${dayNames[d.getDay()]}, ${monthNames[d.getMonth()]} ${d.getDate()} ${d.getFullYear()}`;
+        const formattedDate =
+          dayNames[d.getDay()] + ", " +
+          monthNames[d.getMonth()] + " " +
+          d.getDate() + " " +
+          d.getFullYear();
+        
+        textElem.textContent = formattedDate;
       }
+
+      function updateTextSize() {
+        for (let i = 0; i < 3; i++) {
+          curFontSize *= targetWidth / (textElem.offsetWidth / textElem.parentNode.offsetWidth);
+          textElem.style.fontSize = curFontSize + "pt";
+        }
+      }
+
       updateDate();
+      updateTextSize();
+      window.addEventListener("resize", updateTextSize);
     </script>
   </body>
 </html>
