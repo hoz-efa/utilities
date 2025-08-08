@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Utilities</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    html, body {
+      height: 100%;
+      width: 100%;
+      background: #000;
+      color: #fff;
+      font-family: sans-serif;
+      overflow: hidden;
+    }
+    .container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      text-align: center;
+      padding: 2vh 2vw;
+    }
+    .header {
+      display: flex;
+      align-items: center;
+      gap: 2vw;
+      margin-bottom: 4vh;
+    }
+    .logo {
+      width: 60px;
+      height: 60px;
+    }
+    .logo svg {
+      width: 100%;
+      height: 100%;
+    }
+    h1 {
+      font-size: clamp(2.5rem, 5vw, 4rem);
+      font-weight: 700;
+      color: #fff;
+    }
+    nav {
+      display: flex;
+      flex-direction: column;
+      gap: 2vh;
+    }
+    a {
+      text-decoration: none;
+      color: #fff;
+      font-size: clamp(1.1rem, 2.5vw, 1.6rem);
+      transition: color 0.3s ease;
+    }
+    a:hover {
+      color: #888;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div class="logo">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+          <path stroke="white" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 14v4.833A1.166 1.166 0 0 1 16.833 20H5.167A1.167 1.167 0 0 1 4 18.833V7.167A1.166 1.166 0 0 1 5.167 6h4.618m4.447-2H20v5.768m-7.889 2.121 7.778-7.778"/>
+        </svg>
+      </div>
+      <h1>Utilities</h1>
+    </div>
+    <nav>
+      <a href="date-calendar.html">Date & Calendar</a>
+      <a href="date.html">Date</a>
+      <a href="clock-12hr-seconds.html">12hr Clock with Seconds</a>
+      <a href="clock-12hr.html">12hr Clock</a>
+      <a href="clock-24hr-seconds.html">24hr Clock with Seconds</a>
+      <a href="clock-24hr.html">24hr Clock</a>
+      <a href="clock-analog-seconds.svg">Analog Clock with Seconds</a>
+      <a href="clock-analog.svg">Analog Clock</a>
+    </nav>
+  </div>
+</body>
+</html>

@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html style="height:100%; margin:0; padding:0">
+  <head>
+    <meta charset="UTF-8"/>
+    <title>Calendar</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+    <style type="text/css">
+      html {
+        background: #000000;
+        font-family: sans-serif;
+        font-weight: bold;
+        color: #FFFFFF;
+      }
+      
+      /* Fullscreen button styles */
+      .fullscreen-btn {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        width: 40px;
+        height: 40px;
+        background: rgba(255, 255, 255, 0.1);
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        border-radius: 8px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+        z-index: 1000;
+      }
+      
+      .fullscreen-btn:hover {
+        background: rgba(255, 255, 255, 0.2);
+        border-color: rgba(255, 255, 255, 0.5);
+      }
+      
+      .fullscreen-btn::before {
+        content: "⛶";
+        font-size: 20px;
+        color: #fff;
+      }
+      
+      .fullscreen-btn.fullscreen::before {
+        content: "⛶";
+      }
+      
+      /* Cursor hiding in fullscreen */
+      .hide-cursor {
+        cursor: none !important;
+      }
+      
+      .hide-cursor * {
+        cursor: none !important;
+      }
+      
+      /* Hide fullscreen button in fullscreen mode */
+      .hide-cursor .fullscreen-btn {
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.3s ease;
+      }
+    </style>
+  </head>
+
+  <body style="display:flex; height:100%; margin:0; padding:0; justify-content:center; align-items:center">
+    <div class="fullscreen-btn" id="fullscreenBtn" title="Toggle Fullscreen"></div>
+    <span id="datetext" style="font-kerning:none"></span>
+
+    <script>
+      "use strict";
+
+      const textElem = document.getElementById("datetext");
+      const targetWidth = 0.9;
+      let curFontSize = 20;
+
+      const dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+      const monthNames = ["January", "February", "March", "April", "May", "June",
+                          "July", "August", "September", "October", "November", "December"];
+
+      function updateDate() {
+        const d = new Date();
+        const formattedDate =
+          dayNames[d.getDay()] + ", " +
+          monthNames[d.getMonth()] + " " +
+          d.getDate() + " " +
+          d.getFullYear();
+        
+        textElem.textContent = formattedDate;
+      }
+
+      function updateTextSize() {
+        for (let i = 0; i < 3; i++) {
+          curFontSize *= targetWidth / (textElem.offsetWidth / textElem.parentNode.offsetWidth);
+          textElem.style.fontSize = curFontSize + "pt";
+        }
+      }
+
+      // Fullscreen functionality
+      const fullscreenBtn = document.getElementById('fullscreenBtn');
+      let cursorTimeout;
+      let isFullscreen = false;
+
+      function toggleFullscreen() {
+        if (!document.fullscreenElement) {
+          document.documentElement.requestFullscreen().then(() => {
+            isFullscreen = true;
+            fullscreenBtn.classList.add('fullscreen');
+            startCursorTimer();
+          }).catch(err => {
+            console.log('Error attempting to enable fullscreen:', err);
+          });
+        } else {
+          document.exitFullscreen().then(() => {
+            isFullscreen = false;
+            fullscreenBtn.classList.remove('fullscreen');
+            clearCursorTimer();
+            document.body.classList.remove('hide-cursor');
+          }).catch(err => {
+            console.log('Error attempting to exit fullscreen:', err);
+          });
+        }
+      }
+
+      function startCursorTimer() {
+        clearCursorTimer();
+        cursorTimeout = setTimeout(() => {
+          if (isFullscreen) {
+            document.body.classList.add('hide-cursor');
+          }
+        }, 5000);
+      }
+
+      function clearCursorTimer() {
+        if (cursorTimeout) {
+          clearTimeout(cursorTimeout);
+          cursorTimeout = null;
+        }
+      }
+
+      // Event listeners
+      fullscreenBtn.addEventListener('click', toggleFullscreen);
+      
+      document.addEventListener('fullscreenchange', () => {
+        if (!document.fullscreenElement) {
+          isFullscreen = false;
+          fullscreenBtn.classList.remove('fullscreen');
+          clearCursorTimer();
+          document.body.classList.remove('hide-cursor');
+        }
+      });
+
+      // Show cursor on mouse movement in fullscreen
+      document.addEventListener('mousemove', () => {
+        if (isFullscreen) {
+          document.body.classList.remove('hide-cursor');
+          startCursorTimer();
+        }
+      });
+
+      // Show cursor on any interaction in fullscreen
+      document.addEventListener('click', () => {
+        if (isFullscreen) {
+          document.body.classList.remove('hide-cursor');
+          startCursorTimer();
+        }
+      });
+
+      document.addEventListener('keydown', () => {
+        if (isFullscreen) {
+          document.body.classList.remove('hide-cursor');
+          startCursorTimer();
+        }
+      });
+
+      updateDate();
+      updateTextSize();
+      window.addEventListener("resize", updateTextSize);
+    </script>
+  </body>
+</html>

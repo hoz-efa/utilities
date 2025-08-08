@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html style="height:100%; margin:0; padding:0;">
+<head>
+  <meta charset="UTF-8" />
+  <title>Calendar with Date</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+  <style>
+    html, body {
+      background: #000;
+      color: #fff;
+      font-family: sans-serif;
+      font-weight: bold;
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      width: 100%;
+      overflow: hidden;
+    }
+
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 4vw;
+      padding: 2vw;
+      box-sizing: border-box;
+    }
+
+    .date-text-container {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: flex-start;
+      width: 40vw;
+    }
+
+    .date-line {
+      white-space: nowrap;
+      font-kerning: none;
+    }
+
+    .calendar-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      width: 50vw;
+    }
+
+    .calendar-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 0.3vw;
+      font-size: 2vw;
+      width: 100%;
+    }
+
+    .calendar-grid div {
+      aspect-ratio: 1 / 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .day-header {
+      color: #fff;
+    }
+
+    .day-cell {
+      border-radius: 0;
+    }
+
+    .current-date {
+      background-color: #fff;
+      color: #000;
+      width: 3.5vw;
+      height: 3.5vw;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 0;
+    }
+
+    @media (max-width: 768px) {
+      body {
+        flex-direction: column;
+        gap: 5vw;
+      }
+
+      .date-text-container,
+      .calendar-container {
+        width: 90vw;
+        align-items: center;
+      }
+
+      .calendar-grid {
+        font-size: 5vw;
+        gap: 1vw;
+      }
+
+      .current-date {
+        width: 9.5vw;
+        height: 9.5vw;
+        border-radius: 0;
+      }
+    }
+    
+    /* Fullscreen button styles */
+    .fullscreen-btn {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      width: 40px;
+      height: 40px;
+      background: rgba(255, 255, 255, 0.1);
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      border-radius: 8px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+      z-index: 1000;
+    }
+    
+    .fullscreen-btn:hover {
+      background: rgba(255, 255, 255, 0.2);
+      border-color: rgba(255, 255, 255, 0.5);
+    }
+    
+    .fullscreen-btn::before {
+      content: "⛶";
+      font-size: 20px;
+      color: #fff;
+    }
+    
+    .fullscreen-btn.fullscreen::before {
+      content: "⛶";
+    }
+    
+    /* Cursor hiding in fullscreen */
+    .hide-cursor {
+      cursor: none !important;
+    }
+    
+    .hide-cursor * {
+      cursor: none !important;
+    }
+    
+    /* Hide fullscreen button in fullscreen mode */
+    .hide-cursor .fullscreen-btn {
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+  </style>
+</head>
+<body>
+  <div class="fullscreen-btn" id="fullscreenBtn" title="Toggle Fullscreen"></div>
+  
+  <div class="date-text-container">
+    <div id="dayName" class="date-line" style="font-size:20pt;"></div>
+    <div id="fullDate" class="date-line" style="font-size:20pt;"></div>
+  </div>
+
+  <div class="calendar-container">
+    <div class="calendar-grid" id="calendarGrid"></div>
+  </div>
+
+  <script>
+    const dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+    const dayShort = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+    const monthNames = ["January", "February", "March", "April", "May", "June",
+                        "July", "August", "September", "October", "November", "December"];
+
+    const today = new Date();
+    const currentYear = today.getFullYear();
+    const currentMonth = today.getMonth();
+    const currentDate = today.getDate();
+
+    document.getElementById("dayName").textContent = dayNames[today.getDay()];
+    document.getElementById("fullDate").textContent = `${monthNames[currentMonth]} ${currentDate}, ${currentYear}`;
+
+    const calendarGrid = document.getElementById("calendarGrid");
+
+    // Add short day headers
+    for (let i = 0; i < 7; i++) {
+      const cell = document.createElement("div");
+      cell.textContent = dayShort[i];
+      cell.className = "day-header";
+      calendarGrid.appendChild(cell);
+    }
+
+    // Add empty cells before 1st day
+    const firstDay = new Date(currentYear, currentMonth, 1).getDay();
+    for (let i = 0; i < firstDay; i++) {
+      const empty = document.createElement("div");
+      calendarGrid.appendChild(empty);
+    }
+
+    // Fill actual days
+    const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+    for (let day = 1; day <= daysInMonth; day++) {
+      const cell = document.createElement("div");
+      if (day === currentDate) {
+        const highlight = document.createElement("div");
+        highlight.className = "current-date";
+        highlight.textContent = day;
+        cell.appendChild(highlight);
+      } else {
+        cell.textContent = day;
+        cell.className = "day-cell";
+      }
+      calendarGrid.appendChild(cell);
+    }
+
+    // Resize text logic
+    const targetWidth = 0.9;
+    let curFontSize = 20;
+    const parent = document.querySelector(".date-text-container");
+    const dayElem = document.getElementById("dayName");
+    const dateElem = document.getElementById("fullDate");
+
+    function updateTextSize() {
+      for (let i = 0; i < 3; i++) {
+        const maxWidth = Math.max(dayElem.offsetWidth, dateElem.offsetWidth);
+        curFontSize *= targetWidth / (maxWidth / parent.offsetWidth);
+        dayElem.style.fontSize = curFontSize + "pt";
+        dateElem.style.fontSize = curFontSize + "pt";
+      }
+    }
+
+    // Fullscreen functionality
+    const fullscreenBtn = document.getElementById('fullscreenBtn');
+    let cursorTimeout;
+    let isFullscreen = false;
+
+    function toggleFullscreen() {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().then(() => {
+          isFullscreen = true;
+          fullscreenBtn.classList.add('fullscreen');
+          startCursorTimer();
+        }).catch(err => {
+          console.log('Error attempting to enable fullscreen:', err);
+        });
+      } else {
+        document.exitFullscreen().then(() => {
+          isFullscreen = false;
+          fullscreenBtn.classList.remove('fullscreen');
+          clearCursorTimer();
+          document.body.classList.remove('hide-cursor');
+        }).catch(err => {
+          console.log('Error attempting to exit fullscreen:', err);
+        });
+      }
+    }
+
+    function startCursorTimer() {
+      clearCursorTimer();
+      cursorTimeout = setTimeout(() => {
+        if (isFullscreen) {
+          document.body.classList.add('hide-cursor');
+        }
+      }, 5000);
+    }
+
+    function clearCursorTimer() {
+      if (cursorTimeout) {
+        clearTimeout(cursorTimeout);
+        cursorTimeout = null;
+      }
+    }
+
+    // Event listeners
+    fullscreenBtn.addEventListener('click', toggleFullscreen);
+    
+    document.addEventListener('fullscreenchange', () => {
+      if (!document.fullscreenElement) {
+        isFullscreen = false;
+        fullscreenBtn.classList.remove('fullscreen');
+        clearCursorTimer();
+        document.body.classList.remove('hide-cursor');
+      }
+    });
+
+    // Show cursor on mouse movement in fullscreen
+    document.addEventListener('mousemove', () => {
+      if (isFullscreen) {
+        document.body.classList.remove('hide-cursor');
+        startCursorTimer();
+      }
+    });
+
+    // Show cursor on any interaction in fullscreen
+    document.addEventListener('click', () => {
+      if (isFullscreen) {
+        document.body.classList.remove('hide-cursor');
+        startCursorTimer();
+      }
+    });
+
+    document.addEventListener('keydown', () => {
+      if (isFullscreen) {
+        document.body.classList.remove('hide-cursor');
+        startCursorTimer();
+      }
+    });
+
+    updateTextSize();
+    window.addEventListener("resize", updateTextSize);
+  </script>
+</body>
+</html>
